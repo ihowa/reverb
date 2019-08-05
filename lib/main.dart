@@ -3,8 +3,15 @@ import 'authentication_bloc/authentication_barrel.dart';
 import 'user_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
+import 'bloc_delegate.dart';
+import 'uninitialized_screen.dart';
+import 'user_auth/login_page.dart';
+import 'home_page.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  BlocSupervisor.delegate = SimpleBlocDelegate();
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -27,10 +34,20 @@ class _AppState extends State<MyApp> {
     return BlocProvider(
       builder: (context) => _authenticationBloc,
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: BlocBuilder(
           bloc: _authenticationBloc,
           builder: (BuildContext context, AuthenticationState state) {
-            return Container();
+            if(state is Uninitialized) {
+              return UninitializedScreen();
+            }
+            if(state is Authenticated) {
+              return HomePage(name: state.displayName);
+            }
+            if(state is Unauthenticated) {
+              return LoginPage(userRepository: _userRepository,);
+            }
+            return SizedBox(height: 0.0, width: 0.0,);
           },
         ),
       ),
