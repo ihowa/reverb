@@ -4,6 +4,7 @@ import 'package:reverb/login_bloc/login_barrel.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:reverb/user_repository.dart';
 import 'register_page.dart';
+import 'login_page.dart';
 
 
 class LoginButton extends StatelessWidget {
@@ -59,10 +60,35 @@ class CreateAccountButton extends StatelessWidget {
         'Create an Account',
       ),
       onPressed: () {
-        Navigator.of(context).push(
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) {
             return RegisterPage(userRepository: _userRepository);
-          }),
+          }), (Route<dynamic> route) => false
+        );
+      },
+    );
+  }
+}
+
+class GoToLoginButton extends StatelessWidget {
+  final UserRepository _userRepository;
+
+  GoToLoginButton({Key key, @required UserRepository userRepository})
+      : assert(userRepository != null),
+        _userRepository = userRepository,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton(
+      child: Text(
+        'Already have an account?',
+      ),
+      onPressed: () {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) {
+            return LoginPage(userRepository: _userRepository);
+          }), (Route<dynamic> route) => false
         );
       },
     );

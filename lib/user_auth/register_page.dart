@@ -18,22 +18,23 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   RegisterBloc _registerBloc;
 
+  UserRepository get _userRepository => widget._userRepository;
+
   @override
   void initState() {
     super.initState();
     _registerBloc = RegisterBloc(
-      userRepository: widget._userRepository,
+      userRepository: _userRepository,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: BlocProvider<RegisterBloc>(
+      appBar: AppBar(),
+      body: BlocProvider<RegisterBloc>(
           builder: (context) => _registerBloc,
-          child: RegisterForm(),
-        ),
+          child: RegisterForm(userRepository: _userRepository,),
       ),
     );
   }

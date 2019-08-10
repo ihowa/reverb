@@ -3,8 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reverb/register_bloc/register_barrel.dart';
 import 'package:reverb/authentication_bloc/authentication_barrel.dart';
 import 'login_register_utils.dart';
+import 'package:reverb/user_repository.dart';
 
 class RegisterForm extends StatefulWidget {
+  final UserRepository _userRepository;
+
+  RegisterForm({Key key, @required UserRepository userRepository})
+      : assert(userRepository != null),
+        _userRepository = userRepository,
+        super(key:key);
+
   _RegisterFormState createState() => _RegisterFormState();
 }
 
@@ -13,6 +21,8 @@ class _RegisterFormState extends State<RegisterForm> {
   final TextEditingController _passwordController = TextEditingController();
 
   RegisterBloc _registerBloc;
+
+  UserRepository get _userRepository => widget._userRepository;
 
   bool get isPopulated =>
       _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
@@ -74,10 +84,14 @@ class _RegisterFormState extends State<RegisterForm> {
         bloc: _registerBloc,
         builder: (BuildContext context, RegisterState state) {
           return Padding(
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
             child: Form(
               child: ListView(
                 children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Image.asset('assets/flutter_logo.png', height: 200),
+                  ),
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -103,10 +117,19 @@ class _RegisterFormState extends State<RegisterForm> {
                       return !state.isPasswordValid ? 'Invalid Password' : null;
                     },
                   ),
-                  RegisterButton(
-                    onPressed: isRegisterButtonEnabled(state)
-                        ? _onFormSubmitted
-                        : null,
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        RegisterButton(
+                          onPressed: isRegisterButtonEnabled(state)
+                              ? _onFormSubmitted
+                              : null,
+                        ),
+                        GoToLoginButton(userRepository: _userRepository,)
+                      ],
+                    ),
                   ),
                 ],
               ),
